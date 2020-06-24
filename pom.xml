@@ -12,7 +12,8 @@
 	<modules>
         <module>server</module>
 		<module>integration</module>
-    </modules>
+		<module>api</module>
+	</modules>
 
 	<properties>
 		<java.version>1.8</java.version>
