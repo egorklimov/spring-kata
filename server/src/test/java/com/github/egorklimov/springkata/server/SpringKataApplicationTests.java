@@ -9,5 +9,4 @@ class SpringKataApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }

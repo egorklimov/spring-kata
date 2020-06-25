@@ -8,4 +8,11 @@ import org.springframework.context.annotation.Configuration;
 @ServletComponentScan
 @ComponentScan(basePackages = {"com.github.egorklimov.springkata"})
 public class SpringKataBeanConfiguration {
+
+//  @Autowired
+//  DataSource dataSource;
+//
+//  public JdbcSource postgres() {
+//    return new JdbcSource(dataSource);
+//  }
 }
