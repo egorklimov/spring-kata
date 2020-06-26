@@ -3,5 +3,5 @@
 
 Проект для онлайн-чемпионата Alfa Battle.
 * `server` - конфигурация Spring Boot
-* `integration` - сервисы для работы с Apache Kafka, PostgreSQL, etc
+* `integration` - сервисы для работы с Apache Kafka, PostgreSQL
 * `api` - REST API

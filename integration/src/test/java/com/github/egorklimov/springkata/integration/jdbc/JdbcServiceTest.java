@@ -1,6 +1,6 @@
 package com.github.egorklimov.springkata.integration.jdbc;
 
-import com.github.egorklimov.springkata.integration.ExceptionSafeFunction;
+import com.github.egorklimov.springkata.integration.ThrowingFunction;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
@@ -9,14 +9,14 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.sql.ResultSet;
 
-class JdbcSourceTest {
+class JdbcServiceTest {
 
   private static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>();
 
   @Test
   void checkSimpleQuery() {
-    JdbcSource source = new JdbcSource(new DataSourceFromContainer(postgreSQLContainer).get());
-    IntDatabaseRecord record = source.get(
+    JdbcService source = new JdbcService(new DataSourceFromContainer(postgreSQLContainer).get());
+    IntDatabaseRecord record = source.queryFor(
             IntDatabaseRecord.jdbcSelector(),
             IntDatabaseRecord.jdbcMapper
     );
@@ -28,16 +28,15 @@ class JdbcSourceTest {
   private static class IntDatabaseRecord {
     private final Integer value;
 
-    public static JdbcEntityIdentifier jdbcSelector() {
-      return new JdbcEntityIdentifier("SELECT 1 AS VALUE;");
+    public static String jdbcSelector() {
+      return "SELECT 1 AS VALUE;";
     }
 
-    public static ExceptionSafeFunction<JdbcResponse, IntDatabaseRecord> jdbcMapper = response -> {
-      final ResultSet rs = response.getResultSet();
-      while (rs.next()) {
+    public static ThrowingFunction<ResultSet, IntDatabaseRecord> jdbcMapper = rs -> {
+      if (rs.next()) {
         return new IntDatabaseRecord(rs.getInt("VALUE"));
       }
-      throw new RuntimeException("Aaa");
+      throw new RuntimeException("Результат запроса пуст или содержит больше одной записи");
     };
   }
 }

@@ -1,9 +1,7 @@
 package com.github.egorklimov.springkata.server;
 
-import com.github.egorklimov.springkata.integration.ExceptionSafeFunction;
-import com.github.egorklimov.springkata.integration.jdbc.JdbcEntityIdentifier;
-import com.github.egorklimov.springkata.integration.jdbc.JdbcResponse;
-import com.github.egorklimov.springkata.integration.jdbc.JdbcSource;
+import com.github.egorklimov.springkata.integration.ThrowingFunction;
+import com.github.egorklimov.springkata.integration.jdbc.JdbcService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
@@ -27,16 +25,16 @@ class SpringKataApplicationTests {
 					.withUsername("user")
 					.withPassword("pass");
 
-	private final JdbcSource postgres;
+	private final JdbcService postgres;
 
 	@Autowired
-	SpringKataApplicationTests(final JdbcSource postgres) {
+	SpringKataApplicationTests(final JdbcService postgres) {
 		this.postgres = postgres;
 	}
 
 	@Test
 	void checkQueryToDb() {
-		IntDatabaseRecord record = postgres.get(
+		IntDatabaseRecord record = postgres.queryFor(
 						IntDatabaseRecord.jdbcSelector(),
 						IntDatabaseRecord.jdbcMapper
 		);
@@ -46,18 +44,18 @@ class SpringKataApplicationTests {
 	@Data
 	@RequiredArgsConstructor
 	private static class IntDatabaseRecord {
+
 		private final Integer value;
 
-		public static JdbcEntityIdentifier jdbcSelector() {
-			return new JdbcEntityIdentifier("SELECT 1 AS VALUE;");
+		public static String jdbcSelector() {
+			return "SELECT 1 AS VALUE;";
 		}
 
-		public static ExceptionSafeFunction<JdbcResponse, IntDatabaseRecord> jdbcMapper = response -> {
-			final ResultSet rs = response.getResultSet();
-			while (rs.next()) {
+		public static ThrowingFunction<ResultSet, IntDatabaseRecord> jdbcMapper = rs -> {
+			if (rs.next()) {
 				return new IntDatabaseRecord(rs.getInt("VALUE"));
 			}
-			throw new RuntimeException();
+			throw new RuntimeException("Результат запроса пуст или содержит больше одной записи");
 		};
 	}
 

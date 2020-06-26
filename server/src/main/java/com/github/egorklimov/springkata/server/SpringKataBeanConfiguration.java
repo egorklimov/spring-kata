@@ -1,6 +1,6 @@
 package com.github.egorklimov.springkata.server;
 
-import com.github.egorklimov.springkata.integration.jdbc.JdbcSource;
+import com.github.egorklimov.springkata.integration.jdbc.JdbcService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +23,7 @@ public class SpringKataBeanConfiguration {
   }
 
   @Bean
-  public JdbcSource postgres() {
-    return new JdbcSource(dataSource);
+  public JdbcService postgres() {
+    return new JdbcService(dataSource);
   }
 }
