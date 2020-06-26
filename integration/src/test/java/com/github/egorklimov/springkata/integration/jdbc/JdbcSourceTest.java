@@ -40,5 +40,4 @@ class JdbcSourceTest {
       throw new RuntimeException("Aaa");
     };
   }
-
 }
