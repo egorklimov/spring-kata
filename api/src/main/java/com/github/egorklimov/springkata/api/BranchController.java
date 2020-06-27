@@ -43,6 +43,19 @@ public class BranchController {
     return new ResponseEntity<>(new BranchNotFoundResponse().toString(), HttpStatus.NOT_FOUND);
   }
 
+  @GetMapping("branches/{id}/predict")
+  public ResponseEntity<?> predict(
+          @PathVariable("id") Long id,
+          @RequestParam("dayOfWeek") int dayOfWeek,
+          @RequestParam("hourOfDay") int hourOfDay
+  ) {
+    Optional<BranchDTO> founded = branchService.loadById(id);
+    if (founded.isPresent()) {
+      return ResponseEntity.ok(founded.get());
+    }
+    return new ResponseEntity<>(new BranchNotFoundResponse().toString(), HttpStatus.NOT_FOUND);
+  }
+
   @Data
   private static class BranchNotFoundResponse {
     private String status;
