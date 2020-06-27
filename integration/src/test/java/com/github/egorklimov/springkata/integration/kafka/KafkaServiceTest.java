@@ -1,7 +1,6 @@
 package com.github.egorklimov.springkata.integration.kafka;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -17,6 +16,7 @@ import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.shaded.com.google.common.collect.ImmutableMap;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -58,7 +58,7 @@ class KafkaServiceTest {
             new IntegerDeserializer()
     ).queryFor(
             INT_TOPIC,
-            records -> records.map(ConsumerRecord::value)
+            records -> records.map(Map.Entry::getValue)
                     .collect(Collectors.toList())
     );
     Assertions.assertEquals(
@@ -78,7 +78,7 @@ class KafkaServiceTest {
             new StringDeserializer()
     ).queryFor(
             STRING_TOPIC,
-            records -> records.map(ConsumerRecord::value)
+            records -> records.map(Map.Entry::getValue)
                     .map(Integer::valueOf)
                     .collect(Collectors.toList())
     );

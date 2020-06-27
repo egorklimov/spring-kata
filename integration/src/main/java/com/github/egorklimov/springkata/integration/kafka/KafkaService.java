@@ -6,12 +6,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.Deserializer;
 
 import java.time.Duration;
+import java.util.AbstractMap;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -26,7 +27,7 @@ public class KafkaService<K, V> {
   private final Deserializer<V> valueDeserializer;
 
   @SneakyThrows
-  public <T> T queryFor(String topic, final ThrowingFunction<Stream<ConsumerRecord<K, V>>, T> streamProcessor) {
+  public <T> T queryFor(String topic, final ThrowingFunction<Stream<Map.Entry<K, V>>, T> streamProcessor) {
     try (Consumer<K, V> consumer = createConsumer(topic)) {
       return streamProcessor.apply(
               StreamSupport.stream(
@@ -34,7 +35,7 @@ public class KafkaService<K, V> {
                               .records(topic)
                               .spliterator(),
                       false
-              )
+              ).map(record -> new AbstractMap.SimpleImmutableEntry<>(record.key(), record.value()))
       );
     } catch (Exception e) {
       throw new KafkaServiceException(e);
