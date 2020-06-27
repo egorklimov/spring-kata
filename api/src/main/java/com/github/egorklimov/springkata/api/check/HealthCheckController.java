@@ -1,4 +1,4 @@
-package com.github.egorklimov.springkata.api;
+package com.github.egorklimov.springkata.api.check;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HealthCheckController {
 
   @GetMapping("admin/health")
-  public HealthCheckResponse incrementAndGet() {
+  public HealthCheckResponse check() {
     return new HealthCheckResponse("UP");
   }
 

@@ -5,9 +5,9 @@ import com.github.egorklimov.springkata.integration.jdbc.JdbcService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -16,7 +16,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.sql.ResultSet;
 
-@SpringBootTest
 @ContextConfiguration(initializers = {SpringKataApplicationTests.Initializer.class})
 class SpringKataApplicationTests {
 
@@ -32,6 +31,7 @@ class SpringKataApplicationTests {
 		this.postgres = postgres;
 	}
 
+	@Disabled
 	@Test
 	void checkQueryToDb() {
 		IntDatabaseRecord record = postgres.queryFor(
