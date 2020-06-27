@@ -1,6 +1,9 @@
 package com.github.egorklimov.springkata.api.category;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.egorklimov.springkata.api.category.model.UserTransactionInfo;
+import lombok.Data;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,16 +41,18 @@ public class CategoryController {
     return ResponseEntity.ok(founded);
   }
 
+  @Data
   private static class UserNotFoundResponse {
-    private final String status;
+    private String status;
 
     private UserNotFoundResponse() {
       status = "user not found";
     }
 
     @Override
+    @SneakyThrows
     public String toString() {
-      return String.format("{\"status\":”%s\"}", status);
+      return new ObjectMapper().writeValueAsString(this);
     }
   }
 }
