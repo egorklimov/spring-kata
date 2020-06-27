@@ -41,6 +41,24 @@ public class CategoryController {
     return ResponseEntity.ok(founded);
   }
 
+  @GetMapping("analytic/{userId}/templates")
+  public ResponseEntity<?> templates(@PathVariable("userId") String userId) {
+    UserTransactionInfo founded = transactionInfoMap.get(userId);
+    if (founded == null) {
+      return new ResponseEntity<>(new UserNotFoundResponse().toString(), HttpStatus.NOT_FOUND);
+    }
+    return ResponseEntity.ok(founded);
+  }
+
+  @GetMapping("analytic/{userId}/stats")
+  public ResponseEntity<?> stats(@PathVariable("userId") String userId) {
+    UserTransactionInfo founded = transactionInfoMap.get(userId);
+    if (founded == null) {
+      return new ResponseEntity<>(new UserNotFoundResponse().toString(), HttpStatus.NOT_FOUND);
+    }
+    return ResponseEntity.ok(founded);
+  }
+
   @Data
   private static class UserNotFoundResponse {
     private String status;
