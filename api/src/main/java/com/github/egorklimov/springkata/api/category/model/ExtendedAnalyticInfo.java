@@ -7,16 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AnalyticInfo {
+public class ExtendedAnalyticInfo {
   private double min;
   private double max;
   private double sum;
-
-  public AnalyticInfo(ExtendedAnalyticInfo extendedAnalyticInfo) {
-    this(
-            extendedAnalyticInfo.getMin(),
-            extendedAnalyticInfo.getMax(),
-            extendedAnalyticInfo.getSum()
-    );
-  }
+  private long count;
 }

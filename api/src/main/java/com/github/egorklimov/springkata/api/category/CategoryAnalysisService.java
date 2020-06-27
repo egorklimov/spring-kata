@@ -2,7 +2,11 @@ package com.github.egorklimov.springkata.api.category;
 
 import com.github.egorklimov.springkata.api.category.model.AnalyticInfo;
 import com.github.egorklimov.springkata.api.category.model.AnalyticInfoByCategoryFromTransactionList;
+import com.github.egorklimov.springkata.api.category.model.ExtendedAnalyticInfo;
+import com.github.egorklimov.springkata.api.category.model.ExtendedAnalyticInfoByCategoryFromTransactionList;
+import com.github.egorklimov.springkata.api.category.model.ExtendedUserTransactionInfo;
 import com.github.egorklimov.springkata.api.category.model.TotalSumFromAnalyticInfo;
+import com.github.egorklimov.springkata.api.category.model.TotalSumFromExtendedAnalyticInfo;
 import com.github.egorklimov.springkata.api.category.model.TransactionInfo;
 import com.github.egorklimov.springkata.api.category.model.TransactionInfoFromKafka;
 import com.github.egorklimov.springkata.api.category.model.UserTransactionInfo;
@@ -30,6 +34,10 @@ public class CategoryAnalysisService {
     return Suppliers.memoize(this::transactionsByUser);
   }
 
+  public Supplier<Map<String, ExtendedUserTransactionInfo>> computedExtendedStats() {
+    return Suppliers.memoize(this::extendedTransactionsByUser);
+  }
+
   private Map<String, UserTransactionInfo> transactionsByUser() {
     return new TransactionInfoFromKafka(kafkaService)
             .filteredRecords().stream()
@@ -45,6 +53,25 @@ public class CategoryAnalysisService {
             }).collect(
                     Collectors.toMap(
                             UserTransactionInfo::getUserId,
+                            Function.identity())
+            );
+  }
+
+  private Map<String, ExtendedUserTransactionInfo> extendedTransactionsByUser() {
+    return new TransactionInfoFromKafka(kafkaService)
+            .filteredRecords().stream()
+            .collect(Collectors.groupingBy(TransactionInfo::getUserId))
+            .entrySet().stream()
+            .map(userAndTransactions -> {
+              Map<String, ExtendedAnalyticInfo> stats = new ExtendedAnalyticInfoByCategoryFromTransactionList(userAndTransactions.getValue()).compute();
+              return new ExtendedUserTransactionInfo(
+                      userAndTransactions.getKey(),
+                      new TotalSumFromExtendedAnalyticInfo(stats).computeSum(),
+                      stats
+              );
+            }).collect(
+                    Collectors.toMap(
+                            ExtendedUserTransactionInfo::getUserId,
                             Function.identity())
             );
   }

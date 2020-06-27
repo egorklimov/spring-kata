@@ -1,6 +1,8 @@
 package com.github.egorklimov.springkata.api.category;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.egorklimov.springkata.api.category.model.ExtendedUserTransactionInfo;
+import com.github.egorklimov.springkata.api.category.model.UserStatisticFromUserTransactionInfo;
 import com.github.egorklimov.springkata.api.category.model.UserTransactionInfo;
 import lombok.Data;
 import lombok.SneakyThrows;
@@ -20,11 +22,13 @@ public class CategoryController {
 
   private final CategoryAnalysisService service;
   private final Map<String, UserTransactionInfo> transactionInfoMap;
+  private final Map<String, ExtendedUserTransactionInfo> extendedUserTransactionInfoMap;
 
   @Autowired
   public CategoryController(CategoryAnalysisService service) {
     this.service = service;
     transactionInfoMap = service.computedStats().get();
+    extendedUserTransactionInfoMap = service.computedExtendedStats().get();
   }
 
   @GetMapping("analytic")
@@ -52,11 +56,11 @@ public class CategoryController {
 
   @GetMapping("analytic/{userId}/stats")
   public ResponseEntity<?> stats(@PathVariable("userId") String userId) {
-    UserTransactionInfo founded = transactionInfoMap.get(userId);
+    ExtendedUserTransactionInfo founded = extendedUserTransactionInfoMap.get(userId);
     if (founded == null) {
       return new ResponseEntity<>(new UserNotFoundResponse().toString(), HttpStatus.NOT_FOUND);
     }
-    return ResponseEntity.ok(founded);
+    return ResponseEntity.ok(new UserStatisticFromUserTransactionInfo(founded).get());
   }
 
   @Data
