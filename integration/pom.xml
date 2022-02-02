@@ -14,7 +14,7 @@
     <description>External sources: DB, Kafka, etc</description>
 
     <properties>
-        <postgresql.version>42.2.5</postgresql.version>
+        <postgresql.version>42.2.25</postgresql.version>
         <spring.jdbc.version>2.3.1.RELEASE</spring.jdbc.version>
         <spring.web.version>5.2.7.RELEASE</spring.web.version>
         <kafka.clients.version>2.5.0</kafka.clients.version>
