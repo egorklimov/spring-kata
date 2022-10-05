@@ -18,7 +18,7 @@
         <spring.jdbc.version>2.3.1.RELEASE</spring.jdbc.version>
         <spring.web.version>5.2.7.RELEASE</spring.web.version>
         <kafka.clients.version>2.5.0</kafka.clients.version>
-        <jackson.version>2.11.1</jackson.version>
+        <jackson.version>2.12.6.1</jackson.version>
     </properties>
 
     <dependencies>
